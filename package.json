@@ -28,7 +28,7 @@
 		"@invertase/firestore-stripe-payments": "^0.0.7",
 		"@stripe/firestore-stripe-payments": "^0.0.6",
 		"firebase": "^9.23.0",
-		"firebase-admin": "^11.10.1",
+		"firebase-admin": "^12.1.0",
 		"mdsvex": "^0.11.0",
 		"uuid": "^9.0.0"
 	}
