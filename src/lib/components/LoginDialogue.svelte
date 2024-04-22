@@ -5,9 +5,10 @@
   import { GoogleAuthProvider, getAuth, signInWithPopup, signOut, deleteUser, reauthenticateWithCredential, reauthenticateWithPopup } from "firebase/auth";
     import { error } from "@sveltejs/kit";
     import { currentAdventure } from "$lib/adventureData";
-    import { screenChoice, createAlert, currentAdventureChange } from "$lib/dashboardState";
+    import { screenChoice, createAlert, currentAdventureChange, premiumUser } from "$lib/dashboardState";
   import { onMount } from "svelte";
   import { v4 as uuidv4 } from "uuid";
+  import { checkPremiumStatus, upgradeToPremium } from "$lib/stripeFunctions";
 
 
   let disabledSave = false;
@@ -28,7 +29,8 @@
       body: JSON.stringify({ idToken }),
     });
     createUserDoc().then(() => {
-      window.location.href = "/dashboard/play/";
+      upgradeToPremium('price_1P89xRJBUqZ2A3eLPTvNu6df', $user)
+      // window.location.href = "/dashboard/play/";
     });
   }
 
@@ -81,9 +83,11 @@
 
     setInterval(() => {
       if ($user && window.location.pathname.includes("/demo/map-maker")) {
-            saveAdventureToFirebase($currentAdventure);
+            saveAdventureToFirebase($currentAdventure, $user);
+        } else if ($user && $premiumUser) {
+            window.location.href = "/dashboard";
         } else if ($user) {
-          // window.location.href = "/dashboard";
+            upgradeToPremium('price_1P89xRJBUqZ2A3eLPTvNu6df', $user)
         }
     }, 1000)
 
@@ -264,11 +268,9 @@
       <h4>Welcome, {$user.displayName}</h4>
       <p>You will be redirected to your dashboard.</p>
       <a href="/dashboard" >If you aren't redirected, click here</a>
-      <!-- <a on:click={signOutSSR}>Sign out</a>
-      <a on:click={() => handleDeleteUser($user)}>Delete Account</a> -->
       {:else}
         <h2>Login / Register</h2>
-        <a class:disabled={!legalToggle} on:click={signInWithGoogle}>Sign in with Google</a>
+        <a class:disabled={!legalToggle} on:click={signInWithGoogle}>Log in / Sign up through Google</a>
         <div class="legal">
           <input name="legal" type="checkbox" id="legalToggleCheckbox" on:change={alignLegalToggle}>
           <label class="legalLabel" for="legal">I agree to the Batlas <a class="simpleLink" href="/legalities" target="_blank">Terms & Conditions, Privacy Policy, and Cyber Security Policy.</a></label>

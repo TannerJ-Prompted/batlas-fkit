@@ -221,7 +221,8 @@
         }
     });
     } catch (e) {
-    console.error("Error creating checkout session", e);
+      console.error("Error creating checkout session", e);
+      createAlert("Error creating checkout session");
     }
     };
 

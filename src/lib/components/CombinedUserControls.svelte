@@ -31,10 +31,9 @@
 
     let controlsExpanded = true;
     
-    let maxRows = 12;
-    let maxColumns = 6;
-    let maxFreeHeight = false;
-    let maxFreeWidth = false;
+    let maxRows = 36;
+    let maxColumns = 36;
+
     let loginDialogueVisible = false;
     let controlWindowMode = "adventure";
     let screenWidth;
@@ -65,10 +64,9 @@
 
     function addBottomRow() {
       updateGuideText("Adds a row to the bottom of the map. You can have up to 12 rows with a free account.");
-      if ($currentAdventure.map.length >= maxRows && !$premiumUser) {
-        maxFreeHeight = true;
+      if ($currentAdventure.map.length >= maxRows) {
         return;
-      }
+      } else {
       let mapColumns = $currentAdventure.map[0].length;
       let newRow = [];
       let newRowIndex = $currentAdventure.map.length + 1;
@@ -88,10 +86,10 @@
       newMap.push(newRow);
       currentAdventure.set({ ...$currentAdventure, map: newMap});
     }
+  }
 
     function removeBottomRow() {
       updateGuideText("Removes a row from the bottom of the map.");
-      maxFreeHeight = false;
       let newMap = deepCloneArray($currentAdventure.map);
       newMap.pop();
       currentAdventure.set({ ...$currentAdventure, map: newMap});
@@ -118,19 +116,18 @@
     }
 
     function addTopRow() {
-      if ($currentAdventure.map.length >= maxRows && !$premiumUser) {
-        maxFreeHeight = true;
+      if ($currentAdventure.map.length >= maxRows) {
         return;
-      }
+      } else {
       let newMap = deepCloneArray($currentAdventure.map);
       newMap.unshift(createTopRow());
       newMap.unshift(createTopRow());
       currentAdventure.set({ ...$currentAdventure, map: newMap});
     }
+  }
 
     function removeTopRow() {
       updateGuideText("Removes a row from the top of the map.");
-      maxFreeHeight = false;
       let newMap = deepCloneArray($currentAdventure.map);
       newMap.shift();
       newMap.shift();
@@ -139,10 +136,9 @@
 
     function addColumnRight() {
       updateGuideText("Adds a column to the right of the map. You can have up to 12 columns with a free account.");
-      if ($currentAdventure.map[0].length >= maxColumns && !$premiumUser) {
-        maxFreeWidth = true;
+      if ($currentAdventure.map[0].length >= maxColumns) {
         return;
-      }
+      } else {
       let newMap = deepCloneArray($currentAdventure.map);
       newMap.forEach((row) => {
         row.push({
@@ -157,10 +153,10 @@
       });
       currentAdventure.set({ ...$currentAdventure, map: newMap});
     }
+  }
 
     function removeColumnRight() {
       updateGuideText("Removes a column from the right of the map.");
-      maxFreeWidth = false;
       let newMap = deepCloneArray($currentAdventure.map);
       newMap.forEach((row) => {
         row.pop();
@@ -170,10 +166,9 @@
 
     function addColumnLeft() {
       updateGuideText("Adds a column to the left of the map. You can have up to 12 columns with a free account.");
-      if ($currentAdventure.map[0].length >= maxColumns && !$premiumUser) {
-        maxFreeWidth = true;
+      if ($currentAdventure.map[0].length >= maxColumns) {
         return;
-      }
+      } else {
       let newMap = deepCloneArray($currentAdventure.map);
       newMap.forEach((row) => {
         row.unshift({
@@ -188,10 +183,10 @@
       });
       currentAdventure.set({ ...$currentAdventure, map: newMap});
     }
+  }
 
     function removeColumnLeft() {
       updateGuideText("Removes a column from the left of the map.");
-      maxFreeWidth = false;
       let newMap = deepCloneArray($currentAdventure.map);
       newMap.forEach((row) => {
         row.shift();
@@ -213,6 +208,7 @@
         });
       });
       currentAdventure.set({ ...$currentAdventure, map: newMap});
+      saveAdventureToFirebase($currentAdventure, $user);
     }
 
 
@@ -746,7 +742,6 @@
         on:keydown={addTopRow}
         role="button"
         tabindex="0"
-        class:mapControlDisabled = {maxFreeHeight}
       >
         <Icons icon={"add"} size={"small"} color={"white"}/>
       </div>
@@ -768,7 +763,6 @@
         on:keydown={addBottomRow}
         role="button"
         tabindex="0"
-        class:mapControlDisabled = {maxFreeHeight}
       >
         <Icons icon={"add"} size={"small"} color={"white"}/>
       </div>
@@ -790,7 +784,6 @@
         on:keydown={addColumnLeft}
         role="button"
         tabindex="0"
-        class:mapControlDisabled = {maxFreeHeight}
       >
         <Icons icon={"add"} size={"small"} color={"white"}/>
       </div>
@@ -812,7 +805,6 @@
         on:keydown={addColumnRight}
         role="button"
         tabindex="0"
-        class:mapControlDisabled = {maxFreeHeight}
       >
         <Icons icon={"add"} size={"small"} color={"white"}/>
       </div>

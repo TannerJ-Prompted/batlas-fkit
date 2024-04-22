@@ -21,7 +21,7 @@
 
 
   onMount(async () => {
-    mostRecentPoll = await getMostRecentPoll($premiumUser);
+    mostRecentPoll = await getMostRecentPoll();
     let userVoteData = await checkUserVote();
     console.log(userVoteData);
     userVoted = userVoteData ? userVoteData.option : null;
@@ -32,15 +32,10 @@
 
 
 
-async function getMostRecentPoll(premiumStatus) {
-    const q = query(pollsCollection, orderBy('startDate', 'desc'), limit(2));
+async function getMostRecentPoll() {
+    const q = query(pollsCollection, orderBy('startDate', 'desc'), limit(1));
     const querySnapshot = await getDocs(q);
-    let polls = [];
-    querySnapshot.forEach((doc) => {
-        polls.push(doc.data());
-    });
-    console.log(polls, 'polls', premiumStatus, 'premiumStatus');
-    let recentPoll = polls.filter(poll => poll.premium === premiumStatus)[0];
+    const recentPoll = querySnapshot.docs[0].data();
     return recentPoll;
 }
 
@@ -159,7 +154,6 @@ export let data: PageData;
 </style>
 
 
-{#if $premiumUser}
 <div class="poll">
     <div class="pollHeader">
         <h2>Current Poll</h2>
@@ -175,25 +169,3 @@ export let data: PageData;
         {/each}
     </form>
 </div>
-{:else if freePollAnswered}
-<div class="poll">
-    <div class="pollHeader">
-        <h2>Feedback</h2>
-        <h5>{mostRecentPoll.question}</h5>
-    </div>
-    <Divider/>
-    <p>Thank you for your feedback!</p>
-</div>
-{:else}
-<div class="poll">
-    <div class="pollHeader">
-        <h2>Feedback</h2>
-        <h5>{mostRecentPoll.question}</h5>
-    </div>
-    <Divider/>
-    <form class="votingOptions" on:change|preventDefault={() => createFreePollVote(freePollAnswer, $user.uid)}>
-                <input type="text" class="titleBar" placeholder="A new feature? More tiles? Different styles of dungeon?" maxlength="300" bind:value={freePollAnswer}/>
-                <button type="submit" class="button blackButton">Submit</button>
-            </form>
-</div>
-{/if}

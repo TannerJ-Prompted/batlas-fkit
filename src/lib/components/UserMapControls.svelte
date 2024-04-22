@@ -51,7 +51,7 @@
     }
 
     function addBottomRow() {
-      if ($currentAdventure.map.length >= maxRows && !$premiumUser) {
+      if ($currentAdventure.map.length >= maxRows) {
         maxFreeHeight = true;
         return;
       }
@@ -102,14 +102,14 @@
     }
 
     function addTopRow() {
-      if ($currentAdventure.map.length >= maxRows && !$premiumUser) {
-        maxFreeHeight = true;
+      if ($currentAdventure.map.length >= maxRows) {
         return;
-      }
+      } else {
       let newMap = deepCloneArray($currentAdventure.map);
       newMap.unshift(createTopRow());
       newMap.unshift(createTopRow());
       currentAdventure.set({ ...$currentAdventure, map: newMap});
+      }
     }
 
     function removeTopRow() {
@@ -121,7 +121,7 @@
     }
 
     function addColumnRight() {
-      if ($currentAdventure.map[0].length >= maxColumns && !$premiumUser) {
+      if ($currentAdventure.map[0].length >= maxColumns) {
         maxFreeWidth = true;
         return;
       }
@@ -150,7 +150,7 @@
     }
 
     function addColumnLeft() {
-      if ($currentAdventure.map[0].length >= maxColumns && !$premiumUser) {
+      if ($currentAdventure.map[0].length >= maxColumns) {
         maxFreeWidth = true;
         return;
       }

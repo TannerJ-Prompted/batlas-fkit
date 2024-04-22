@@ -8,6 +8,9 @@
     import { currentAdventure } from '$lib/adventureData';
     import { offScreenMenu } from "$lib/dashboardState";
     import { onMount } from 'svelte';
+    import { page } from '$app/stores';
+
+
 
     
     export let data: LayoutData;
@@ -65,6 +68,8 @@
         height: 100%;
         display: flex;
         flex: 1;
+        width: 100%;
+        overflow: hidden;
     }
 
 
@@ -123,7 +128,7 @@
 <AuthCheck>
     <div class="container">
         <main class="batlasDashboard">
-            {#if $user}
+                {#if $user?.uid === $page.params.creatorId || !$page.url.href.includes('/player/')}
             <section class="navigation">
                 <NavigationBar />
             </section>

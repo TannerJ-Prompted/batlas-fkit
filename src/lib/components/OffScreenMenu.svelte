@@ -238,12 +238,6 @@
 
     <div class="offScreenMenu brutalismBorder navigationColumn" class:offScreen={$offScreenMenu}>
         <div class="topSection">
-            {#if !$premiumUser}
-            <a href="#" class="iconBox premiumButton" on:click={() => upgradeToPremium("price_1OVqLtJBUqZ2A3eLxjmGdXhE")}>
-                <Icons icon={"d20"} size={"full"} color={"black"} />
-                    <p>Upgrade to premium</p>
-            </a>
-            {/if}
             <a href="/dashboard/play" class="iconBox" class:active="{$page.route.id.includes("play")}">
                 <Icons icon={"sword"} size={"full"} color={"black"} />
                 <p>Adventures</p>

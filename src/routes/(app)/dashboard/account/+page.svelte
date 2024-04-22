@@ -9,6 +9,7 @@
     import { activeRule } from '$lib/dashboardState';
     import RulesExamplesList from '$lib/components/RulesExamplesList.svelte';
     import {user} from "$lib/firebase";
+    import { upgradeToPremium, checkPremiumStatus } from '$lib/stripeFunctions';
     
 
     import { getAuth, deleteUser } from "firebase/auth";
@@ -131,19 +132,17 @@ function deleteCurrentUser() {
 <div class="dashboardContainer">
     <div class="blackBox thirdsColumn column">
             <h2>Account</h2>
-            {#if $premiumUser}
             <h3>Manage Subscription</h3>
             <p>Batlas Subscriptions are managed through the Stripe customer portal</p>
             <a href="https://billing.stripe.com/p/login/test_28ocO10E86Gx4Qo4gg" target="_blank" class="button blackButton">You Stripe Customer Portal</a>
-            {/if}
             <h3>Manage Account</h3>
-            {#if !premiumUser}
-            <p>You must cancel your subscription before deleting your account. Otherwise you may continue to be charged.</p>
-            {/if}
-            <a href="#" class="button blackButton" class:disabled={!premiumUser} on:click={deleteConfirmation}>Delete your account</a>
+            <a href="#" class="button blackButton" on:click={deleteConfirmation}>Delete your account</a>
             <h3>Support</h3>
             <p>If you have any issues with your account please reach out to batlasmaps@gmail.com and I'll assist you as best as I can.</p>
-    </div>
+            <h4>Early Adopter Purchase</h4>
+            <p class="button blackButton" on:click={() => upgradeToPremium('price_1P89xRJBUqZ2A3eLPTvNu6df', $user)}>Purchase Early Adopter</p>
+            <p class="button blackButton" on:click={() => checkPremiumStatus($user)}>Check Premium Status</p>
+        </div>
 </div>
 
 {#if deleteConfirmationDialogue}
