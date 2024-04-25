@@ -1,6 +1,6 @@
 import { currentAdventureChange } from "$lib/dashboardState";
 import { db, user } from "$lib/firebase";
-import { doc, setDoc, collection, deleteDoc } from "firebase/firestore";
+import { doc, setDoc, collection, deleteDoc, getDoc } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
 import { createAlert } from "$lib/dashboardState";
 
@@ -125,4 +125,20 @@ export async function deleteAdventure(adventure, user) {
       createAlert(`${adventure.title} deleted!`);
     });
   } catch (error) {}
+}
+
+export async function setCurrentAdventureFromFirebase(creatorId, adventureId) {
+  const adventureRef = doc(db, "users", creatorId, "adventures", adventureId);
+  const adventureSnapshot = await getDoc(adventureRef);
+  let returnedAdventure = {};
+  if (adventureSnapshot.exists()) {
+    const adventureData = adventureSnapshot.data();
+    returnedAdventure = {
+      ...adventureData,
+      map: JSON.parse(adventureData.map),
+    };
+  } else {
+    console.log("Adventure document does not exist");
+  }
+  return returnedAdventure;
 }

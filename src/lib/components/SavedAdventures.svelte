@@ -34,10 +34,6 @@
                 copiedAdventures.push(currentAdventure);
             });
 
-            if (!$premiumUser) {
-                copiedAdventures = copiedAdventures.slice(0, 5);
-            }
-
             let sortedCopiedAdventures = copiedAdventures.sort(compare);
             console.log("sortedCopiedAdventures", sortedCopiedAdventures);
 
@@ -84,11 +80,6 @@
     {#if $adventureListStore.length === 0}
     <div class="freeAccountNotice blackBox">
         <p>You don't have any adventures saved. Head to 'Create' and start designing you dungeon!</p>
-    </div>
-    {/if}
-    {#if !$premiumUser}
-    <div class="freeAccountNotice blackBox">
-        <p>On a free account you're limited to 5 saved adventures</p>
     </div>
     {/if}
     {#each $adventureListStore as adventure}

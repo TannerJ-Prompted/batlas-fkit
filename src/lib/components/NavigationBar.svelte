@@ -236,29 +236,19 @@
 </div>
 <div class="navigationColumn" class:active={!$offScreenMenu}>
 <div class="topSection">
-    {#if !$premiumUser}
-    <a href="#" class="iconBox button blackButton premiumButton" on:click={() => upgradeToPremium("price_1OVqLtJBUqZ2A3eLxjmGdXhE")}>
-        <Icons icon={"d20"} size={"medium"} color={"black"} />
-        <p>Go premium</p>
-    </a>
-    {/if}
     <a href="#" class="iconBox button blackButton" class:active="{$page.route.id.includes("play")}" on:click={() => navigateTo("play")}>
         <Icons icon={"sword"} size={"medium"} color={"white"} />
-        <p>Adventures</p>
+        <p>Your maps</p>
     </a>
     <a href="/dashboard/create" class="iconBox button blackButton" class:active="{$page.route.id.includes("create")}" on:click={navigateToCreate}>
         <Icons icon={"add"} size={"medium"} color={"white"} />
         <p>Create</p>
     </a>
-    {#if !$premiumUser}
-    <Divider color={"white"} />
-    <p>Premium features</p>
-    {/if}
-    <a href="#" class="iconBox button blackButton" class:active="{$page.route.id.includes("dungeons")}" class:disabled={!$premiumUser} on:click={() => navigateTo("dungeons")}>
+    <a href="#" class="iconBox button blackButton" class:active="{$page.route.id.includes("dungeons")}" on:click={() => navigateTo("dungeons")}>
         <Icons icon={"rules"} size={"medium"} color={"white"} />
         <p>Dungeons</p>
     </a>
-    <a href="#" class="iconBox button blackButton disabled" class:active="{$page.route.id.includes("rules")}" on:click={() => navigateTo("rules")}>
+    <a href="#" class="iconBox button blackButton" class:active="{$page.route.id.includes("rules")}" on:click={() => navigateTo("rules")}>
         <Icons icon={"d20"} size={"medium"} color={"white"} />
         <p>Batlas RPG</p>
     </a>

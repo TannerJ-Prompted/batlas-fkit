@@ -244,20 +244,9 @@ function deepCloneArray(arr) {
 
 <div class="container">
         <div class="controlRow">
-        {#if !$premiumUser && $userAdventureCount >= 5}
-          <div class="upgradeButton">
-            <p>Upgrade to save more adventures</p>
-          </div>
-        {:else}
           <input type="text" rows="1" class="titleBar" placeholder="Enter a title" maxlength="300" bind:value={$currentAdventure.title} on:keydown={handleEnter}/>
         <div class="blackBox" on:click={() => saveNewAdventureToFirebase($currentAdventure, $user)}>
           <p>Create map</p>
         </div>
-        {/if}
       </div>
 </div>
-{#if !$premiumUser}
-<div class="usageNotifier">
-  <p>{$userAdventureCount}/5 free adventures saved.</p>
-</div>
-{/if} 

@@ -1,5 +1,5 @@
 <script>
-    import DemoDungeon from "$lib/components/DemoDungeon.svelte";
+    import CombinedMap from "$lib/components/CombinedMap.svelte";
     </script>
         
     <style>
@@ -19,5 +19,5 @@
     </style>
             
     <div class="map">
-            <DemoDungeon role={"player"}/>
+            <CombinedMap role={"gameMaster"}/>
     </div>

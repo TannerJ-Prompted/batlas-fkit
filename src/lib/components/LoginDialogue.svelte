@@ -5,12 +5,15 @@
   import { GoogleAuthProvider, getAuth, signInWithPopup, signOut, deleteUser, reauthenticateWithCredential, reauthenticateWithPopup } from "firebase/auth";
     import { error } from "@sveltejs/kit";
     import { currentAdventure } from "$lib/adventureData";
-    import { screenChoice, createAlert, currentAdventureChange } from "$lib/dashboardState";
-  import { onMount } from "svelte";
+    import { screenChoice, createAlert, currentAdventureChange, premiumUser } from "$lib/dashboardState";
+  import { onMount, onDestroy } from "svelte";
   import { v4 as uuidv4 } from "uuid";
+  import { checkPremiumStatus, upgradeToPremium } from "$lib/stripeFunctions";
+  import Divider from "./Divider.svelte";
 
 
   let disabledSave = false;
+  let premium = false;
 
 
   async function signInWithGoogle() {
@@ -28,7 +31,8 @@
       body: JSON.stringify({ idToken }),
     });
     createUserDoc().then(() => {
-      window.location.href = "/dashboard/play/";
+      upgradeToPremium('price_1P89xRJBUqZ2A3eLPTvNu6df', $user)
+      // window.location.href = "/dashboard/play/";
     });
   }
 
@@ -79,13 +83,26 @@
       }
     }
 
-    setInterval(() => {
-      if ($user && window.location.pathname.includes("/demo/map-maker")) {
-            saveAdventureToFirebase($currentAdventure);
+    let interval;
+
+    onMount(() => {
+      premium = checkPremiumStatus($user);
+      interval = setInterval(() => {
+        if ($user && premium && window.location.pathname.includes("/demo/map-maker/")) {
+          saveAdventureToFirebase($currentAdventure, $user);
+        } else if ($user && premium) {
+          window.location.href = "/dashboard";
         } else if ($user) {
-          // window.location.href = "/dashboard";
+          upgradeToPremium('price_1P89xRJBUqZ2A3eLPTvNu6df', $user)
         }
-    }, 1000)
+      }, 100);
+    });
+
+    onDestroy(() => {
+      clearInterval(interval);
+    });
+
+
 
     let legalToggle = false;
 
@@ -148,15 +165,10 @@
     text-decoration: underline;
   }
 
-  p {
-      color: var(--batlas-black);
-      font-size: 1em;
-  }
-
 
   .loginBox {
-    padding: 3em;
-    padding-bottom: 1em;
+    padding: 3rem;
+    padding-bottom: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -167,14 +179,14 @@
 
   .loginBox a {
     transition: all 0.3 ease;
-    margin-top: 1em;
+    margin-top: 1rem;
     font-family: 'Poppins', sans-serif;
-    border: 0.1em solid var(--batlas-white);
-    border-radius: 0.6em;
-    font-size: 1em;
+    border: 0.1rem solid var(--batlas-white);
+    border-radius: 0.6rem;
+    font-size: 1rem;
     font-weight: 400;
     background-color: var(--batlas-black);
-    padding: 0.5em 1em;
+    padding: 0.5rem 1rem;
     color: var(--batlas-white);
   }
 
@@ -189,11 +201,8 @@
   }
 
   .loginBox p {
-    font-size: 0.8em;
     text-align: center;
-    margin-top: 3em;
     color: var(--batlas-white);
-
   }
 
   label {
@@ -238,12 +247,23 @@
     color: var(--batlas-white);
   }
 
+  .legalLabel a {
+    font-size: 0.8rem;;
+  }
+
   .blackBox {
     text-align: center;
     border: none;
   }
 
-  .legals a{
+  .legals {
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    opacity: 0.5;
+  }
+
+  .legals a {
+    font-size: 0.8rem;
     border: 0;
     background: none;
     padding: 0;
@@ -257,18 +277,52 @@
     color: var(--batlas-white)
   }
 
+  .info {
+    font-size: 1.6rem;
+    margin-top: 2rem;
+  }
+
+  h4 {
+    font-size: 1rem;
+  }
+
+  .loginBox .button {
+    margin-top: 2rem;
+  }
+
+  .loginBox img {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .nonPremium {
+    font-size: 1rem;
+    opacity: 0.6;
+    margin-bottom: 2rem;
+  }
+
+  .simpleLink {
+    font-size: 0.8rem;
+  }
+
 </style>
 
 <div class=" loginBox blackBox">
-      {#if $user}
-      <h4>Welcome, {$user.displayName}</h4>
-      <p>You will be redirected to your dashboard.</p>
-      <a href="/dashboard" >If you aren't redirected, click here</a>
-      <!-- <a on:click={signOutSSR}>Sign out</a>
-      <a on:click={() => handleDeleteUser($user)}>Delete Account</a> -->
+      {#if $user && premium}
+        <h4>Welcome, {$user.displayName}</h4>
+        <p class="info">You will be redirected to your dashboard.</p>
+        <a class="button blackButton" href="/dashboard" >If you aren't redirected, click here</a>
+      {:else if $user && !premium}
+        <h4 class="nonPremium">Thanks for making an account,<br> {$user.displayName}</h4>
+        <Divider color="white" />
+        <p class="info">You'll be redirected shortly to a Stripe checkout page to finish signing up!</p>
+        <img src="/img/warrior.webp" alt="Upgrade to Premium" width="300px" height="auto" />
+        <Divider color="white" />
+        <p class="button blackButton" on:click={() => upgradeToPremium('price_1P89xRJBUqZ2A3eLPTvNu6df', $user)
+      } >If you aren't redirected, click here</p>
       {:else}
-        <h2>Login / Register</h2>
-        <a class:disabled={!legalToggle} on:click={signInWithGoogle}>Sign in with Google</a>
+        <h2>Enter the dungeon</h2>
+        <a class:disabled={!legalToggle} on:click={signInWithGoogle}>Log in / Sign up through Google</a>
         <div class="legal">
           <input name="legal" type="checkbox" id="legalToggleCheckbox" on:change={alignLegalToggle}>
           <label class="legalLabel" for="legal">I agree to the Batlas <a class="simpleLink" href="/legalities" target="_blank">Terms & Conditions, Privacy Policy, and Cyber Security Policy.</a></label>

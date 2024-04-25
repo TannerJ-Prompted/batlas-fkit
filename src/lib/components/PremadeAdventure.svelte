@@ -164,6 +164,11 @@
             transform: translateY(-0.2em);
         }
 
+        .copy p{
+            margin: 0;
+            padding: 0;
+        }
+
         .copy:hover p{
             cursor: pointer;
             text-decoration: underline;

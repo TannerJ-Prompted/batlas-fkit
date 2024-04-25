@@ -12,6 +12,7 @@
   import { v4 as uuidv4 } from "uuid";
   import { createAlert } from "$lib/dashboardState";
   import { onMount } from 'svelte';
+  import { setCurrentAdventureFromFirebase } from "$lib/firebaseFunctions";
 
   export let role;
 
@@ -75,26 +76,21 @@
     }
   }
 
-async function setCurrentAdventureFromFirebase(creatorId, adventureId) {
-  const adventureRef = doc(db, "users", creatorId, "adventures", adventureId);
-  const adventureSnapshot = await getDoc(adventureRef);
-  if (adventureSnapshot.exists()) {
-    const adventureData = adventureSnapshot.data();
-    currentAdventure.set({
-      ...adventureData,
-      map: JSON.parse(adventureData.map)
-    });
-  } else {
-    console.log("Adventure document does not exist");
+  async function fetchAdventureData() {
+    let adventureData = await setCurrentAdventureFromFirebase(creatorId, adventureId);
+    currentAdventure.set(adventureData);
   }
-}
+
+
 
   let adventureData = {};
   let adventureId = $page.params.adventureId;
   let creatorId = $page.params.creatorId;
 
   onMount(async () =>{
-    await setCurrentAdventureFromFirebase(creatorId, adventureId);
+    fetchAdventureData();
+    console.log("currentAdventure", $currentAdventure);
+    console.log("ROLE", role);
   });
 
 
@@ -365,7 +361,6 @@ async function setCurrentAdventureFromFirebase(creatorId, adventureId) {
   }
 
 </style>
-
 {#if role==="editor"}
   <div class="adventureNotesContainer blackBox" class:active={$adventureNotesDisplayed}>
     <h5>Primer</h5>
@@ -373,7 +368,7 @@ async function setCurrentAdventureFromFirebase(creatorId, adventureId) {
     <h5>Notes</h5>
     <textarea rows="5" class="notes" placeholder="Adventure notes" maxlength="10000" bind:value={$currentAdventure.notes.notes}/>
   </div>
-{:else}
+{:else if role!=="player"}
   <div class="adventureNotesContainer blackBox" class:active={$adventureNotesDisplayed}>
     <h5>Primer</h5>
     <p>{$currentAdventure.notes.primer}</p>

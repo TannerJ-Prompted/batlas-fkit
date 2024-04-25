@@ -1,10 +1,8 @@
 <script>
   import { currentAdventure } from "$lib/adventureData";
-import CombinedMap from "$lib/components/CombinedMap.svelte";
+    import CombinedMap from "$lib/components/CombinedMap.svelte";
   import { onMount } from "svelte";
-    onMount(() => {
-        console.log("Create ID page", $currentAdventure);
-    });
+
 </script>
 
 <style>

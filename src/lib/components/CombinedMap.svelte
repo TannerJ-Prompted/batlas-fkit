@@ -6,9 +6,13 @@
     import { page } from '$app/stores';
     import { activeTile, setActiveTile, currentAdventureChange, activeTileSidebar, adventureNotesDisplayed } from "$lib/dashboardState";
     import { currentAdventure } from "$lib/adventureData";
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import { generateMap } from "$lib/mapGen";
     import {premadeAdventures} from "$lib/adventureData";
+    import { db, user } from "$lib/firebase";
+  import { saveAdventureToFirebase, setCurrentAdventureFromFirebase } from '$lib/firebaseFunctions';
+  import { onSnapshot, doc} from 'firebase/firestore';
+
 
   
     export let role;
@@ -16,6 +20,11 @@
     let mapDisabled = false;
     let guideText = "As you click around helpful text will appear here";
     let dungeonId = $page.params.dungeonId;
+    let creatorId = $page.params.creatorId;
+    let adventureId = $page.params.adventureId;
+    let adventureSnapshot = null;
+    let updatedAdventure = null;
+
 
   
     $: $currentAdventure, changeAlert();
@@ -24,6 +33,30 @@
       const matchingAdventure = premadeAdventures.find(adventure => adventure.dungeonId === dungeonId);
         if(matchingAdventure){
             currentAdventure.set(matchingAdventure);
+        } else if (role==="demoEditor"){
+          currentAdventure.set({
+            title: "Demo",
+            notes: {
+              primer: "A short introduction to the overall idea of the adventure.",
+              notes: "More in depth notes about the specifics of the adventure."
+            }
+          });
+          generateMap();
+        } else if (role === "player") {
+          console.log("PLAYER - setting current adventure from firebase");
+          setCurrentAdventureFromFirebase(creatorId, adventureId);
+          const docRef = doc(db, "users", creatorId, "adventures", adventureId);
+          const unsubscribe = onSnapshot(docRef, (doc) => {
+            console.log("Current data: ", doc.data());
+            updatedAdventure = doc.data();
+            currentAdventure.set({
+            ...updatedAdventure,
+            map: JSON.parse(updatedAdventure.map),
+            })
+            console.log("updated adventure", updatedAdventure);
+          });
+        } else {
+          setCurrentAdventureFromFirebase(creatorId, adventureId);
         }
     });
   
@@ -51,7 +84,7 @@
     async function handleFogToggle(e, newAdventure, cell, i, j) {
       newAdventure.map[i][j].fogOfWar = !newAdventure.map[i][j].fogOfWar;
       currentAdventure.set(newAdventure);
-  
+      saveAdventureToFirebase($currentAdventure, $user);
     }
   
   </script>
@@ -97,6 +130,7 @@
           height: 100%;
           width: 100%;
           max-height: none;
+          margin-right: 15rem;
     }
   
   
@@ -242,6 +276,8 @@
         width: 100%;
         margin: 0em;
         flex-direction: column;
+        margin-bottom: 5rem;
+
       }
 
       .mapContainer::-webkit-scrollbar {
@@ -288,8 +324,10 @@
   <div class="mapContainer">
   
     <div class="dialogueContainer">
+      {#if $user !== null && role !== "player"}
       <CombinedUserControls guideText={guideText} updateGuideText={updateGuideText} {role}/>
-      <AdventureNotes {role} />
+      {/if}
+        <AdventureNotes {role} />
       {#if $activeTile.rowIndex !== null}
       <CombinedTileWindow handleFogToggle={handleFogToggle} tileOptions={true} {role}/>
       {/if}
@@ -303,9 +341,11 @@
         {#each $currentAdventure.map as row, i}
             <div class="gridRow">
                 {#each row as cell, j}
-                  <div class="gridTile" style="background-image: {cell.chosenTile?.img}; position: relative; bottom: 0em;" class:masterFoggedTile = {cell.fogOfWar}>
-                    {#if cell.tileNotes != "" || cell.interestPoints.length > 0 || cell.tileTitle != ""}
-                      <TileNotesIndicator/>
+                  <div class="gridTile" style="background-image: {cell.chosenTile?.img}; position: relative; bottom: 0em;" class:masterFoggedTile = {cell.fogOfWar} class:playerFoggedTile = {cell.fogOfWar && role === "player"}>
+                    {#if role==="gameMaster" || role==="editor" || role==="demoEditor"}
+                      {#if cell.tileNotes != "" || cell.interestPoints.length > 0 || cell.tileTitle != ""}
+                        <TileNotesIndicator/>
+                      {/if}
                     {/if}
                     {#if role !== "player"}
                       <div class="tileSelectorHoverDetector">

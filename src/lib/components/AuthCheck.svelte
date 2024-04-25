@@ -5,37 +5,36 @@ import { doc, setDoc, collection, getDocs } from "firebase/firestore";
 import { writable } from "svelte/store";
 import { premiumUser } from "$lib/dashboardState";
   import { onMount } from 'svelte';
+  import { checkPremiumStatus } from '$lib/stripeFunctions';
 
 
 
 let checkingUserStatus = false;
 
 onMount(() => {
-  setTimeout(() => {
-    checkingUserStatus = true;
-  }, 1000);
+  let loopCount = 0;
+  let authCheckInterval = setInterval(() => {
+    try {
+    if ($user.uid) {
+      checkPremiumStatus($user);
+      clearInterval(authCheckInterval);
+      console.log("user status checked", $premiumUser);
+    } else {
+      console.log("checking user status");
+      loopCount ++;
+    }
+  } catch (error) {
+    if (loopCount > 30) {
+      clearInterval(authCheckInterval);
+    }
+    console.log("checking user status error", error);
+    loopCount ++;
+  };
+  checkingUserStatus = true;
+  }, 100);
 });
 
-export async function checkPremiumStatus(user) {
-  console.log("checking premium status", user.uid);
-  const subscriptions = await getDocs(collection(db, "users", user.uid, "subscriptions"));
-  subscriptions.forEach((doc) => {
-    let document = doc.data();
-    console.log(document);
-    if (document.status === "active") {
-      premiumUser.set(true);
-    } else {
-      premiumUser.set(false);
-    }
-  });
-  console.log("premium status checked", $premiumUser);
-};
 
-$: {
-  if ($user) {
-    checkPremiumStatus($user);
-  }
-}
 
   </script>
 
@@ -66,7 +65,7 @@ $: {
     align-items: center;
     height: 100vh;
     opacity: 0;
-    transition: opacity 0.5s;
+    transition: opacity 0.5s 1s;
     will-change: opacity;
   }
 
@@ -103,20 +102,11 @@ $: {
 
 </style>
   
-  {#if $user}
+  {#if $user && $premiumUser}
     <slot />
-  {:else if !$user}
+  {:else}
     {#if $page.url.href.includes("/player/")}
-    <section class="userCheck" class:active = {checkingUserStatus}>
-      <div class="authCheck">
-        <h1>403 unauthorised access</h1>
-          <h2>You need an account to play</h2>
-          <p>It's easy to sign up, just link your google account below.</p>
-      </div>
-      <div class="doubleColumn">
-              <a href="/login" class="lostButton">Take up your sword<br>(Log in/Sign up)</a>
-      </div>
-    </section>
+    <slot />
     {:else}
     <section class="userCheck" class:active = {checkingUserStatus}>
       <div class="authCheck">
