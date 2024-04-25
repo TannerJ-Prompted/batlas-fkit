@@ -1,15 +1,5 @@
 <script>
-    import { currentAdventure } from "$lib/adventureData";
-  import DemoMap from "$lib/components/DemoMap.svelte";
-  import Map from "$lib/components/Map.svelte";
-    import { onMount } from "svelte";
-    import { user } from "$lib/firebase";
-//     onMount(async () => {
-
-// if ($user) {
-//     window.location.href = '/dashboard/create';
-// }
-// });
+    import CombinedMap from "$lib/components/CombinedMap.svelte";
   </script>
   
   <style>
@@ -34,6 +24,6 @@
   </style>
   
   <div class="mapColumn">
-      <DemoMap role={"editor"}/>
+      <CombinedMap role={"demoEditor"}/>
   </div>
   

@@ -18,6 +18,7 @@
   import Divider from '$lib/components/Divider.svelte';
     import { generateMap } from "$lib/mapGen";
     import {premadeAdventures} from "$lib/adventureData";
+    import { page } from '$app/stores';
 
     
   import { saveAdventureToFirebase, disabledSave } from '$lib/firebaseFunctions';
@@ -63,7 +64,7 @@
     }
 
     function addBottomRow() {
-      updateGuideText("Adds a row to the bottom of the map. You can have up to 12 rows with a free account.");
+      updateGuideText("Adds a row to the bottom of the map.");
       if ($currentAdventure.map.length >= maxRows) {
         return;
       } else {
@@ -96,7 +97,7 @@
     }
 
     function createTopRow(){
-      updateGuideText("Adds a row to the top of the map. You can have up to 12 rows with a free account.");
+      updateGuideText("Adds a row to the top of the map.");
       let mapColumns = $currentAdventure.map[0].length;
       let newRow = [];
       for (let i = 0; i < mapColumns; i++) {
@@ -135,7 +136,7 @@
     }
 
     function addColumnRight() {
-      updateGuideText("Adds a column to the right of the map. You can have up to 12 columns with a free account.");
+      updateGuideText("Adds a column to the right of the map.");
       if ($currentAdventure.map[0].length >= maxColumns) {
         return;
       } else {
@@ -165,7 +166,7 @@
     }
 
     function addColumnLeft() {
-      updateGuideText("Adds a column to the left of the map. You can have up to 12 columns with a free account.");
+      updateGuideText("Adds a column to the left of the map. ");
       if ($currentAdventure.map[0].length >= maxColumns) {
         return;
       } else {
@@ -208,7 +209,9 @@
         });
       });
       currentAdventure.set({ ...$currentAdventure, map: newMap});
+      if (role === "editor" || role === "gameMaster"){
       saveAdventureToFirebase($currentAdventure, $user);
+      };
     }
 
 
@@ -276,7 +279,7 @@
     }
 
     onMount(() => {
-      if(role === "demo") {
+      if(role === "demoEditor") {
       $currentAdventure.title = "Demo";
       };
     })
@@ -407,7 +410,8 @@
   .changeAlert {
     position: fixed;
     width: 20rem;
-    top: 1rem;
+    top: auto;
+    bottom: 1rem;
     padding: 0.5rem;
     background-color: var(--batlas-black);
     left: calc(50% - 10rem);
@@ -512,7 +516,7 @@
       justify-content: flex-start;
       align-items: center;
       gap: 0.5rem;
-      padding: 1rem;
+      padding: 0rem 0.5rem;
       background-color: var(--batlas-black);
       color: var(--batlas-white);
       font-size: 1rem;
@@ -555,6 +559,23 @@
       .accordionRow .button {
         margin: 0;
         padding: 0;
+      }
+
+      .demo {
+        margin-top: 3rem;
+      }
+
+      .loginDialogueContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 100;
       }
 
     @media(max-width:735px){
@@ -601,12 +622,19 @@
         padding: 1rem;
         padding-bottom: 0.5rem;
       }
+
+      .guideBox {
+        width: calc(100% - 2rem);
+        padding: 0rem 0.5rem;
+        bottom: 4rem;
+        position: fixed;
+      }
     }
 </style>
 
 <svelte:window bind:innerWidth={screenWidth} />
 
-<div class="controlContainer blackBox" class:collapsedPadding={!controlsExpanded}>
+<div class="controlContainer blackBox" class:collapsedPadding={!controlsExpanded} class:demo={$page.url.href.includes("/demo/")}>
     <div class="controlRow accordionRow">
     <div class="button">
       <input type="text" rows="1" class="titleBar" placeholder="Adventure title" maxlength="300" bind:value={$currentAdventure.title}/>
@@ -626,7 +654,7 @@
 </div>
 </div>
 
-{#if screenWidth <= 735 && controlsExpanded && role==="editor"}
+{#if screenWidth <= 735 && controlsExpanded && role==="editor" || screenWidth <= 735 && controlsExpanded && role==="demoEditor"}
 <Divider color={"white"}/>
     <div class="controlRow">
       <div class="button blackButton"
@@ -673,7 +701,7 @@
           >
           <p>Fog all</p>
         </div>
-        {#if role==="editor"}
+        {#if role==="editor" || role==="demoEditor"}
           {#if $currentAdventure.public}
           <div class="button whiteButton"
             on:click={togglePublic} 
@@ -697,7 +725,7 @@
             {/if}
             {/if}
           </div>
-          {#if role==="editor"}
+          {#if role==="editor" || role==="demoEditor"}
         <div class="controlRow">
           <div class="button blackButton"
             on:click={() => handleMapGenerate($currentAdventure, $user)}
@@ -707,7 +735,7 @@
           >
             <p>Random</p>
           </div>
-          {#if role === "demo"}
+          {#if role === "demoEditor"}
           <div class="button" class:whiteButton="{$currentAdventureChange}" 
             on:click={demoSaveAttempt}
             on:keydown={demoSaveAttempt}
@@ -730,7 +758,12 @@
         {/if}
     {/if}
         <div>
-  {#if screenWidth > 735 && controlsExpanded && role==="editor" || screenWidth <= 735 && controlWindowMode === "size" && controlsExpanded && role==="editor"}
+  {#if 
+  screenWidth > 735 && controlsExpanded && role==="editor" 
+  || screenWidth > 735 && controlsExpanded && role==="demoEditor" 
+  || screenWidth <= 735 && controlWindowMode === "size" && controlsExpanded && role==="editor"
+  || screenWidth <= 735 && controlWindowMode === "size" && controlsExpanded && role==="editor"
+  }
   {#if screenWidth > 735}
   <Divider color={"white"}/>
   {/if}
@@ -822,21 +855,12 @@
 </div>
 </div>
 
-{#if role==="demo"}
+{#if role==="demoEditor"}
   <div class="blackBox guideBox">
-    {#if screenWidth > 735}
-    <div class="row">
-    <h4>Guide</h4>
-    <a class="button whiteButton" href="#" on:click={displayLoginDialogue}>Sign up</a>
-  </div>
-  {/if}
   <p>
     {guideText}
 
-  </p>
-  {#if $currentAdventureChange}
-  <p class="changeAlert">You have unsaved changes</p>
-{/if}  
+  </p> 
   </div>
 
   {#if $currentAdventureChange}

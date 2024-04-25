@@ -98,7 +98,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 100lvh;
     width: 100%;
   }
 </style>

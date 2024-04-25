@@ -1,12 +1,3 @@
-<script>
-    let isLoggedIn = false;
-
-    function handleLogin() {
-        isLoggedIn = true;
-        // Add your login logic here
-    }
-</script>
-
 <style>
     .header {
         height: 4rem;
@@ -41,5 +32,5 @@
 
 <div class="header">
     <h1>Batlas</h1>
-        <a class="button whiteButton" href="/login">Sign up</a>
+    <a class="button whiteButton" href="/login">Sign up</a>
 </div>

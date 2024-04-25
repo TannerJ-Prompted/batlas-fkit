@@ -32,7 +32,16 @@
     onMount(() => {
       const matchingAdventure = premadeAdventures.find(adventure => adventure.dungeonId === dungeonId);
         if(matchingAdventure){
-            currentAdventure.set(matchingAdventure);          
+            currentAdventure.set(matchingAdventure);
+        } else if (role==="demoEditor"){
+          currentAdventure.set({
+            title: "Demo",
+            notes: {
+              primer: "A short introduction to the overall idea of the adventure.",
+              notes: "More in depth notes about the specifics of the adventure."
+            }
+          });
+          generateMap();
         } else if (role === "player") {
           console.log("PLAYER - setting current adventure from firebase");
           setCurrentAdventureFromFirebase(creatorId, adventureId);
@@ -267,6 +276,8 @@
         width: 100%;
         margin: 0em;
         flex-direction: column;
+        margin-bottom: 5rem;
+
       }
 
       .mapContainer::-webkit-scrollbar {
@@ -330,8 +341,8 @@
         {#each $currentAdventure.map as row, i}
             <div class="gridRow">
                 {#each row as cell, j}
-                  <div class="gridTile" style="background-image: {cell.chosenTile?.img}; position: relative; bottom: 0em;" class:masterFoggedTile = {cell.fogOfWar && role === "gameMaster"} class:playerFoggedTile = {cell.fogOfWar && role === "player"}>
-                    {#if role==="gameMaster" || role==="editor"}
+                  <div class="gridTile" style="background-image: {cell.chosenTile?.img}; position: relative; bottom: 0em;" class:masterFoggedTile = {cell.fogOfWar} class:playerFoggedTile = {cell.fogOfWar && role === "player"}>
+                    {#if role==="gameMaster" || role==="editor" || role==="demoEditor"}
                       {#if cell.tileNotes != "" || cell.interestPoints.length > 0 || cell.tileTitle != ""}
                         <TileNotesIndicator/>
                       {/if}
