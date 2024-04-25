@@ -95,7 +95,7 @@
         } else if ($user) {
           upgradeToPremium('price_1P89xRJBUqZ2A3eLPTvNu6df', $user)
         }
-      }, 100);
+      }, 1000);
     });
 
     onDestroy(() => {
