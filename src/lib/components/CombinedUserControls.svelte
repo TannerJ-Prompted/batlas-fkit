@@ -590,9 +590,10 @@
       }
 
       .controlContainer {
-        top: 4rem;
+        top: 0.5rem;
         position: absolute;
         width: calc(100% - 2rem);
+        padding: 0.5rem;
       }
 
       .controlRow {
@@ -619,14 +620,18 @@
       }
 
       .collapsedPadding {
-        padding: 1rem;
+        padding: 0.5rem;
         padding-bottom: 0.5rem;
+      }
+
+      .collapsedPadding .controlRow {
+        margin-bottom: 0rem;
       }
 
       .guideBox {
         width: calc(100% - 2rem);
         padding: 0rem 0.5rem;
-        bottom: 4rem;
+        bottom: 1rem;
         position: fixed;
       }
     }
@@ -859,11 +864,10 @@
   <div class="blackBox guideBox">
   <p>
     {guideText}
-
   </p> 
   </div>
 
-  {#if $currentAdventureChange}
+  {#if $currentAdventureChange && role !== "demoEditor"}
   <p class="changeAlert">You have unsaved changes</p>
 {/if} 
 

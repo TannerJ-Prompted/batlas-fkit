@@ -13,6 +13,7 @@
     let mapDisabled = false;
 
     let disabledMapGenButton = false;
+    let activeInterestPointsArray = [];
 
 
 
@@ -55,8 +56,9 @@
         e.target.closest('div').classList.toggle("interestPointActive");
     }
 
-    function toggleActive(e) {
-      e.target.closest('.interestPoint').classList.toggle("interestPointActive");
+    function toggleActive(index) {
+      // e.target.closest('.interestPoint').classList.toggle("interestPointActive");
+      activeInterestPointsArray[index] = !activeInterestPointsArray[index];
     }
 
     function handlePointOfInterestDelete(interestPoint){
@@ -72,6 +74,12 @@
       newMap[$activeTile.rowIndex][$activeTile.columnIndex].interestPoints.push({title: "", info: ""});
       currentAdventure.set({ ...$currentAdventure, map: newMap});
     }
+
+    onMount(() => {
+      for (let interestPoint of $currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].interestPoints) {
+        activeInterestPointsArray.push(false);
+      }
+    });
 
 
 </script>
@@ -228,27 +236,31 @@
          <div class="interestPointsList hideScrollbar">
             {#if $currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].interestPoints.length > 0}
               {#each $currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].interestPoints as interestPoint, i}
-                <div  class="interestPoint" class:interestPointActive={false} class:interestPointPlay={$page.route.id.includes("play")}>
+                <div  class="interestPoint" class:interestPointActive={activeInterestPointsArray[i]} class:interestPointPlay={$page.route.id.includes("play")}>
                   <div class="interestPointTopBar">
-                    {#if role === "editor"}
+                    {#if role === "editor" || role === "demoEditor"}
                       <input type="text" class="titleBar" class:hideScrollbar="{!$activeTile.tileOptions}" placeholder="Interesting thing" maxlength="22" bind:value={$currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].interestPoints[i].title}>
                     {:else}
                     <div class="interestPointTitle">
                       <p>{interestPoint.title}</p>
                     </div>
                     {/if}
-                      <div on:click={(e) => toggleActive(e)} class="iconContainer">
+                      <div on:click={() => toggleActive(i)} class="iconContainer">
                         <div class="chevronRotate">
-                          <Icons icon={"add"} size={"medium"} color={"white"} />
+                          {#if activeInterestPointsArray[i]}
+                            <Icons icon={"minus"} size={"medium"} color={"white"} />
+                          {:else}
+                            <Icons icon={"add"} size={"medium"} color={"white"} />
+                          {/if}
                         </div>
                       </div>
-                      {#if role==="editor"}
+                      {#if role==="editor" || role === "demoEditor"}
                         <div on:click={() => handlePointOfInterestDelete(interestPoint)} class="iconContainer">
                           <Icons icon={"remove"} size={"small"} color={"white"} />
                         </div>
                     {/if}
                   </div>
-                  {#if role==="editor"}
+                  {#if role==="editor" || role === "demoEditor"}
                     <textarea class="interestPointInfo" class:hideScrollbar="{!$activeTile.tileOptions}" placeholder="Info about the thing" rows="5" bind:value={$currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].interestPoints[i].info}></textarea>
                   {:else}
                   <div class="interestPointInfo">
@@ -258,7 +270,7 @@
                 </div>
               {/each}
             {/if}
-            {#if role === "editor"}
+            {#if role === "editor" || role === "demoEditor"}
               <div on:click={() => handlePointOfInterestCreation()} class="iconContainer centerAlignIcon pointOfInterestAddIcon button blackButton">
                 <Icons icon={"add"} size={"medium"} color={"white"} />
               </div>

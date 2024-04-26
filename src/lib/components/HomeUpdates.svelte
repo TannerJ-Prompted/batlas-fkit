@@ -80,13 +80,14 @@ export let data: PageData;
         <div class="updates">
             <div class="updateHeader">
             <h2>Latest updates</h2>
-            <h5>Beta Version 1.0.0</h5>
+            <h5>Launch Version 1.0</h5>
         </div>
             <Divider />
             <div class="updateBody">
-            <p>If you're seeing this please play around and break things.</p>
-            <p>I'll be releasing version 1.0 shortly which will put the premium user paywall in place.</p>
-            <p>Until then there's an easy toggle in the 'beta bar' at the top of your page that you can use to toggle it in and off. So go crazy and thanks for being here so early on.</p>
-        </div>
+            <p>This is the launch version of Batlas 🎉</p>
+            <p>Thanks for jumping on the band wagon so early and being willing to give your two cents to make this tool as good as it can be.</p>
+            <p>There will undoubtedly be bugs and I'll be working to iron them out but the main thing I'd love at this point is user feedback. I can't think of everything after all.</p>
+              <p>There's a poll below with a few things I want to add and you can help prioritise them by voting. You can also submit whatever comments you have here:</p>
+          </div>
     </div>
 

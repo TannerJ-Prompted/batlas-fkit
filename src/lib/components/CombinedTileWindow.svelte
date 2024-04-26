@@ -486,7 +486,7 @@
                 <p class="button blackButton">Fog</p>
               </div>
                 {/if}
-            {#if role === "editor"}
+            {#if role === "editor" || role === "demoEditor"}
             <div class="clearTileInfo" on:click={(e) => clearTileInfo(e, $currentAdventure, $activeTile, $activeTile.rowIndex, $activeTile.columnIndex)} class:activeConnection="{$currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].fogOfWar}">
                 <p class="button blackButton">Clear</p>
             </div>
@@ -499,7 +499,7 @@
     </div>
     <Divider color={"white"}/>
     <div class="tileInfo" class:hideScrollbar="{!$activeTile.tileOptions}">
-      {#if role === "editor"}
+      {#if role === "editor" || role === "demoEditor"}
           <div class="">
               <a class="button blackButton" class:whiteButton="{windowMode === "notes"}" on:click={() => changeWindowMode('notes')} >Notes</a>
               <a class="button blackButton" class:whiteButton="{windowMode === "tile"}"  on:click={() => changeWindowMode('tile')} >Tile</a>
@@ -512,10 +512,10 @@
                         <p>{$currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].tileTitle}</p>
                     </div>
                   {/if}
-              {:else if role === "editor"}
+              {:else if role === "editor" || role === "demoEditor"}
                       <input type="text" class="titleBar" placeholder="Room title" bind:value={$currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].tileTitle}>
               {/if}
-              {#if role==="editor"}
+              {#if role==="editor" || role === "demoEditor"}
                 <textarea class="tileInfoText" class:hideScrollbar="{!$activeTile.tileOptions}" placeholder="Room notes" rows="40" bind:value={$currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].tileNotes}></textarea>
               {:else if $currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].tileNotes != ""}
                 <p class="roomDescription">{$currentAdventure.map[$activeTile.rowIndex][$activeTile.columnIndex].tileNotes}</p>

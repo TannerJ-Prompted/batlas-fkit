@@ -86,17 +86,20 @@
     let interval;
 
     onMount(() => {
-      premium = checkPremiumStatus($user);
+      setTimeout(() => {
+        checkPremiumStatus($user);
       interval = setInterval(() => {
-        if ($user && premium && window.location.pathname.includes("/demo/map-maker/")) {
+        if ($user && $premiumUser===true && window.location.pathname.includes("/demo/map-maker/")) {
           saveAdventureToFirebase($currentAdventure, $user);
-        } else if ($user && premium) {
+        } else if ($user && $premiumUser===true) {
           window.location.href = "/dashboard";
         } else if ($user) {
           upgradeToPremium('price_1P89xRJBUqZ2A3eLPTvNu6df', $user)
         }
-      }, 100);
-    });
+      }, 1000);
+    }, 1000);
+  });
+
 
     onDestroy(() => {
       clearInterval(interval);
@@ -308,11 +311,11 @@
 </style>
 
 <div class=" loginBox blackBox">
-      {#if $user && premium}
+      {#if $user && premium===true}
         <h4>Welcome, {$user.displayName}</h4>
         <p class="info">You will be redirected to your dashboard.</p>
         <a class="button blackButton" href="/dashboard" >If you aren't redirected, click here</a>
-      {:else if $user && !premium}
+      {:else if $user && premium===false}
         <h4 class="nonPremium">Thanks for making an account,<br> {$user.displayName}</h4>
         <Divider color="white" />
         <p class="info">You'll be redirected shortly to a Stripe checkout page to finish signing up!</p>
