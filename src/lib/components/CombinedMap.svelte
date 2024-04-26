@@ -24,16 +24,18 @@
     let adventureId = $page.params.adventureId;
     let adventureSnapshot = null;
     let updatedAdventure = null;
+    let matchingAdventure = null;
 
 
   
     $: $currentAdventure, changeAlert();
   
     onMount(() => {
-      const matchingAdventure = premadeAdventures.find(adventure => adventure.dungeonId === dungeonId);
-        if(matchingAdventure){
-            currentAdventure.set(matchingAdventure);
-        } else if (role==="demoEditor"){
+      console.log("Batlas Map role:", role);
+      console.log(adventureId, creatorId, dungeonId, $page.url.href)
+      if ($page.url.href.includes("/demo/adventure")) {
+        currentAdventure.set(premadeAdventures[0]);
+      } else if (role==="demoEditor"){
           currentAdventure.set({
             title: "Demo",
             notes: {
@@ -43,7 +45,6 @@
           });
           generateMap();
         } else if (role === "player") {
-          console.log("PLAYER - setting current adventure from firebase");
           setCurrentAdventureFromFirebase(creatorId, adventureId);
           const docRef = doc(db, "users", creatorId, "adventures", adventureId);
           const unsubscribe = onSnapshot(docRef, (doc) => {
@@ -55,8 +56,13 @@
             })
             console.log("updated adventure", updatedAdventure);
           });
-        } else {
+        } else if (role === "editor" || role === "gameMaster") {
+          if (adventureId !== undefined) {
           setCurrentAdventureFromFirebase(creatorId, adventureId);
+          } else if (dungeonId !== undefined) {
+            let matchingAdventure = premadeAdventures.find(adventure => adventure.dungeonId === dungeonId);
+            currentAdventure.set(matchingAdventure);
+          }
         }
     });
   
@@ -324,7 +330,7 @@
   <div class="mapContainer">
   
     <div class="dialogueContainer">
-      {#if $user !== null && role !== "player"}
+      {#if $user !== null && role !== "player" || role==="demoEditor"}
       <CombinedUserControls guideText={guideText} updateGuideText={updateGuideText} {role}/>
       {/if}
         <AdventureNotes {role} />

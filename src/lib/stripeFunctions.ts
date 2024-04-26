@@ -53,36 +53,21 @@ export async function upgradeToPremium(priceId, user) {
 }
 
 export async function checkPremiumStatus(user) {
-  console.log("checking premium status", user.uid);
-  // Checks a subscription status for a user
-  // console.log("checking premium status", user.uid);
-  // const subscriptions = await getDocs(
-  //   collection(db, "users", user.uid, "subscriptions")
-  // );
-  // subscriptions.forEach((doc) => {
-  //   let document = doc.data();
-  //   console.log(document);
-  //   if (document.status === "active") {
-  //     premiumUser.set(true);
-  //   } else {
-  //     premiumUser.set(false);
-  //   }
-  // });
-
-  // One-time-payment check
-  const userQuery = query(
-    collection(db, "users", user.uid, "payments"),
-    where("id", "==", "pi_3P8AkfJBUqZ2A3eL0n3ZTSzQ")
-  );
+  console.log("checking premium status", user);
+  const userQuery = query(collection(db, "users", user.uid, "payments"));
   const userDocSnap = await getDocs(userQuery);
   userDocSnap.forEach((doc) => {
     let document = doc.data();
-    if (document.id === "pi_3P8AkfJBUqZ2A3eL0n3ZTSzQ") {
-      premiumUser.set(true);
-      console.log("Access");
-    } else {
-      premiumUser.set(false);
-      console.log("No Access");
-    }
+    let items = document.items;
+    items?.forEach((item) => {
+      console.log(item.price.id);
+      if (item.price.id === "price_1P89xRJBUqZ2A3eLPTvNu6df") {
+        premiumUser.set(true);
+        console.log("Access");
+      } else {
+        premiumUser.set(false);
+        console.log("No Access");
+      }
+    });
   });
 }
