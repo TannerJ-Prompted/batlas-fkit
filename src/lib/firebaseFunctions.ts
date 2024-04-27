@@ -1,4 +1,4 @@
-import { currentAdventureChange } from "$lib/dashboardState";
+import { currentAdventureChange, userFeedback } from "$lib/dashboardState";
 import { db, user } from "$lib/firebase";
 import { doc, setDoc, collection, deleteDoc, getDoc } from "firebase/firestore";
 import { v4 as uuidv4 } from "uuid";
@@ -141,4 +141,24 @@ export async function setCurrentAdventureFromFirebase(creatorId, adventureId) {
     console.log("Adventure document does not exist");
   }
   return returnedAdventure;
+}
+
+export async function submitFeedback(user, newFeedback) {
+  const feedbackRef = collection(db, "feedback");
+  const feedbackDoc = doc(feedbackRef, user.uid);
+  const feedbackSnapshot = await getDoc(feedbackDoc);
+  const feedbackData = feedbackSnapshot.data();
+  if (feedbackData !== undefined) {
+    console.log("feedbackData exists", feedbackData);
+    await setDoc(feedbackDoc, {
+      feedback: [...feedbackData.feedback, newFeedback],
+    });
+  } else {
+    console.log("feedbackData does not exist");
+    await setDoc(feedbackDoc, {
+      feedback: [newFeedback],
+    });
+  }
+  userFeedback.set("");
+  createAlert("Feedback submitted! Thank you!");
 }

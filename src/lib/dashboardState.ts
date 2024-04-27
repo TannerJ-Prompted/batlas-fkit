@@ -15,6 +15,8 @@ export const userAdventureCount = writable(0);
 export const currentAdventureChange = writable(false);
 export const adventureNotesDisplayed = writable(false);
 export const activeTileSidebar = writable(false);
+export const userFeedback = writable("");
+export const activeRuleCategory = writable("");
 
 export const activeTile = writable({
   rowIndex: null,

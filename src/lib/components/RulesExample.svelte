@@ -29,17 +29,13 @@
   </script>
   
   <style>
-      .exampleContainer {
-          padding: 1em;
-      }
-  
-      .exampleSubsection {
-          padding: 1em;
-          margin-top: 2em;
-      }
+    .ruleTitle {
+        color: var(--batlas-white);
+    }
   </style>
-  <div class="exampleContainer dungeonBorder">
-      <div class="ruleTitle">
+
+  <div class="blackBox">
+      <div class="title">
           <h2>{example.title}</h2>
       </div>
       <div class="ruleTitle">

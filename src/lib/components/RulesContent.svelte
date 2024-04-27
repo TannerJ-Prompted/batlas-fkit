@@ -16,14 +16,17 @@
 
     .rulesSubsection {
         margin-top: 2em;
+        color: var(--batlas-white);
     }
 
     .ruleTitle{
+        color: var(--batlas-white);
+
         font-size: 0.5em;
     }
 </style>
 
-<div class="rulesContainer blackBox">
+<div class="rulesContainer">
     <div class="ruleTitle">
         <h2>{rule.title}</h2>
     </div>

@@ -19,78 +19,30 @@
         activeRule.set(categoryChoice);
     }
 
+    function handleRuleChoice(){
+        activeRule.set(subsection);
+    }
+
 </script>
 
 <style>
 
-    .savedAdventure {
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-        width: 100%;
-        height: auto;
-        padding: 1em;
-        gap: 0.5em;
-        background: var(--batlas-white);
-        cursor: pointer;
-    }
+.subsection {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 90%;
+    height: 3rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease-out;
+    padding: 0.5rem;
+    color: var(--batlas-white);
+}
 
-
-    .savedAdventureOptions {
-        display:none;
-    }
-
-    .savedAdventure:hover h4 {
-        text-decoration: underline;
-    }
-
-    .subsection {        
-        padding: 0.5rem;
-        width: calc(100% - 2rem);
-    }
-
-    .savedAdventure h4{
-            font-size: 1em;
-            margin: 0.2em;
-        }
-
-    @media screen and (max-width: 1500px) {
-
-        .savedAdventure {
-            display: grid;
-            grid-template-columns: 9fr 1fr;
-            grid-template-rows: auto;
-        }
-        .savedAdventure h4{
-            font-size: 1em;
-            margin: 0.2em;
-        }
-
-        .savedAdventureTitle {
-            grid-column: 1 / 9;
-            grid-row: 1 / 2;
-        }
-
-        .savedAdventureDescription {
-            grid-column: 1 / 9;
-            grid-row: 2 / 3;
-        }
-
-        .savedAdventureOptions {
-        display: block;
-        grid-column: 9 / 11;
-        grid-row: 1 / 3;
-        border: 0.2em solid var(--batlas-black);
-        height: 100%;
-        width: 0.5em;
-        background-color: var(--batlas-black);
-        }
-    }
-
-
+.subsection.active {
+    background: var(--batlas-white);
+    color: var(--batlas-black);
+}
 </style>
-<a class="subsection savedAdventure brutalismBorder" on:click={(event) => handleCategoryClick(event, subsection)}>
-    <div class="savedAdventureTitle"><h4>{subsection.title}</h4></div>
-</a>
+    <p class="subsection blackBox" on:click={handleRuleChoice} class:active={$activeRule.title === subsection.title}>{subsection.title}</p>
 

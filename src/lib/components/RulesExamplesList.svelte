@@ -21,37 +21,50 @@
   </script>
   
   <style>
-      .exampleContainer {
-        margin-bottom: 3em;;
-          width: 100%;
-      }
-  
-      .exampleSubsection {
-          margin-top: 0em;
-      }
 
-      .ruleSubtitle {
-          margin-top: 0.5em;
-          font-size: 1em;
-      }
+    h3, :global(.exampleContent h3) {
+        font-size: 1.5rem;
+        margin-top: 2rem;
+    }
 
-      .ruleTitle h2 {
-            margin-top: 0.5em;
-            font-size: 1.5em;
-      }
+    .exampleContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 0rem;
+        width: 100%;
+        height: 100%;
+        color: var(--batlas-white);
+    }
+
+    .exampleContainer:not(:first-child) {
+        margin-top: 4rem;
+    }
+
+    .exampleContent {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 0rem;
+        width: 100%;
+        height: 100%;
+        color: var(--batlas-white);
+    }
 
   </style>
 
 {#if rule.examples}
 {#each rule.examples as example, i}
     <div class="exampleContainer">
-        <div class="ruleTitle">
+        <div class="title">
             <h2>{example.title}</h2>
         </div>
-        <div class="ruleSubtitle">
-            <h4>{example.subtitle}</h4>
+        <div class="subtitle">
+            <h3>{example.subtitle}</h3>
         </div>
-        <div class="exampleSubsection">
+        <div class="subsection">
             <div class="exampleContent" id="exampleContainer{i}">
                 {@html example.content}
             </div>

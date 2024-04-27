@@ -32,26 +32,44 @@
         flex-direction: column;
         justify-content: flex-start;
         align-items: flex-start;
-        gap: 1rem;
+        gap: 0.5rem;
+        max-height: calc(100lvh - 2rem);
+    }
+
+    .exampleColumn {
+        padding: 0rem;
+    }
+
+    .scrollColumn {
+        padding: 0rem;
+    }
+
+    .scrollColumn div {
+        height: 100%;
+        width: 100%;
+        overflow-y: scroll;
+        padding: 1rem;
+    }
+
+    .categoryColumn {
+        overflow-y: visible;
     }
 
 </style>
 
 <div class="dashboardContainer">
-    <div class="blackBox thirdsColumn column">
-        <div class="categories">
+    <div class="thirdsColumn column categoryColumn">
             {#each rules as category}
-                <RulesCategory {category} />
+                <RulesCategory {category}/>
             {/each}
-        </div>
     </div>
-    <div class="blackBox thirdsColumn column">
+    <div class="blackBox thirdsColumn column scrollColumn">
         <div class="subcategories">
             <RulesContent rule={$activeRule}/>
         </div>
     </div>
     {#if $activeRule.content !== ""}
-    <div class="blackBox thirdsColumn column">
+    <div class="blackBox thirdsColumn column scrollColumn">
         <div class="examples">
             <RulesExamplesList rule={$activeRule}/>
         </div>

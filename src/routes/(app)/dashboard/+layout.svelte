@@ -9,11 +9,14 @@
     import { offScreenMenu } from "$lib/dashboardState";
     import { onMount } from 'svelte';
     import { page } from '$app/stores';
+    import LoadingScreen from '$lib/components/LoadingScreen.svelte';
+    import { fade } from 'svelte/transition';
+
+    export let data;
 
 
 
     
-    export let data: LayoutData;
 
     let mapArray;
     let mapString;
@@ -124,9 +127,10 @@
         }
     }
 </style>
+{#key data.pathname}
 
 <AuthCheck>
-    <div class="container">
+    <div class="container" in:fade={{ duration: 300, delay: 400 }} out:fade={{ duration: 300 }}>
         <main class="batlasDashboard">
                 {#if $user?.uid === $page.params.creatorId || !$page.url.href.includes('/player/')}
             <section class="navigation">
@@ -139,3 +143,4 @@
         </main>
     </div>
 </AuthCheck>
+{/key}

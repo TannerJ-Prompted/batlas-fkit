@@ -1,22 +1,16 @@
 <script>
     import { currentAdventure } from "$lib/adventureData";
-    import { activeRule, screenChoice } from "$lib/dashboardState";
+    import { activeRule, screenChoice, activeRuleCategory } from "$lib/dashboardState";
     import Subsection from "./Subsection.svelte";
 
     $activeRule
     $currentAdventure
-    export let category
+    export let category;
+    export let i;
 
-    function setActive(e) {
-        document.querySelectorAll('.categoryButton').forEach((element) => {
-            element.classList.remove("active");
-        });
-        e.target.closest('a').classList.toggle("active");
-    }
 
-    function handleCategoryClick(event, categoryChoice){
-        setActive(event);
-        activeRule.set(categoryChoice);
+    function handleCategoryClick(){
+        activeRuleCategory.set(category.title);
     }
 
 </script>
@@ -41,16 +35,25 @@
         align-items: flex-end;
         gap: 0.5rem;
         max-height: 0rem;
-        transition: max-height 0.3s ease-out;
+        transition: max-height 1s ease-out;
         will-change: max-height;
+    }
+
+    .categoryButton.active {
+        background: var(--batlas-white);
+        color: var(--batlas-black);
+    }
+
+    .subsectionsContainer.active {
+        max-height: 100rem;
     }
 
 
 </style>
-<a class="categoryButton button blackButton" on:click={(event) => handleCategoryClick(event, category)}>
+<a class="categoryButton button blackButton" on:click={handleCategoryClick} class:active={$activeRuleCategory === category.title}>
     <p>{category.title}</p>
 </a>
-<div class="subsectionsContainer">
+<div class="subsectionsContainer" class:active={$activeRuleCategory === category.title}>
     {#each category.subsections as subsection}
         <Subsection {subsection} />
     {/each}

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import HomeTutorial from './HomeTutorial.svelte';
 
     import type { PageData } from '../../routes/(app)/dashboard/$types';
-        import { screenChoice, offScreenMenu, activeRule, activeTile, premiumUser, createAlert } from "$lib/dashboardState";
-    import { db, userData, auth, user, app } from "$lib/firebase";
-    import { collection, query, orderBy, limit, getDocs, addDoc, doc, setDoc } from "firebase/firestore";
+        import { createAlert, userFeedback } from "$lib/dashboardState";
+    import { db, user } from "$lib/firebase";
+    import { collection, query, orderBy, limit, getDocs, doc, setDoc } from "firebase/firestore";
+    import { submitFeedback } from '$lib/firebaseFunctions';
   import { onMount } from 'svelte';
   import Divider from './Divider.svelte';
   
@@ -14,6 +14,8 @@
   $: userVoted = null;
 
   const pollsCollection = collection(db, 'polls');
+
+
 
 
 
@@ -73,6 +75,21 @@ export let data: PageData;
         gap: 1rem;
         width: 100%;
     }
+
+    .feedbackForm {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .feedbackForm textarea {
+      width: 100%;
+      background-color: var(--batlas-white);
+      border: 0.1rem solid var(--batlas-black);
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+    }
     
 
 </style>
@@ -84,10 +101,15 @@ export let data: PageData;
         </div>
             <Divider />
             <div class="updateBody">
-            <p>This is the launch version of Batlas 🎉</p>
-            <p>Thanks for jumping on the band wagon so early and being willing to give your two cents to make this tool as good as it can be.</p>
-            <p>There will undoubtedly be bugs and I'll be working to iron them out but the main thing I'd love at this point is user feedback. I can't think of everything after all.</p>
+              <p>This is the launch version of Batlas 🎉</p>
+              <p>Thanks for jumping on the band wagon so early and being willing to give your two cents to make this tool as good as it can be.</p>
+              <p>There will undoubtedly be bugs and I'll be working to iron them out but the main thing I'd love at this point is user feedback. I can't think of everything after all.</p>
               <p>There's a poll below with a few things I want to add and you can help prioritise them by voting. You can also submit whatever comments you have here:</p>
-          </div>
+              <h3>Feedback:</h3>
+              <form class="feedbackForm" on:submit={submitFeedback($user, $userFeedback)}>
+                <textarea rows="4" cols="50" bind:value={$userFeedback}></textarea>
+                <button class="button blackButton">Submit</button>
+              </form>
+            </div>
     </div>
 

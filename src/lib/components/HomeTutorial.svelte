@@ -15,20 +15,23 @@
 
     .tutorialRow {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: flex-start;
         align-items: flex-start;
-        gap: 0.25em;
+        gap: 1rem;
         width: 100%;
+        flex-wrap: wrap;
     }
 
     .tutorialRow h3 {
         font-size: 1.25rem;
         font-weight: 600;
+        width: 33%;
     }
 
     .tutorialRow p {
-        width: 100%;
+        min-width: 16rem;
+        width: calc(100% - 33% - 1rem);
         margin: 0em;
     }        
 </style>
