@@ -11,9 +11,6 @@
     import { page } from '$app/stores';
     import LoadingScreen from '$lib/components/LoadingScreen.svelte';
     import { fade } from 'svelte/transition';
-    import html2canvas from 'html2canvas';
-  import { redirect } from '@sveltejs/kit';
-
 
     export let data;
 
@@ -28,8 +25,6 @@
         mapArray = value;
         mapString = JSON.stringify(mapArray);
     })
-
-
 
 
 </script>
@@ -79,7 +74,6 @@
         width: 100%;
         overflow: hidden;
     }
-
 
 
     @media (max-width: 1400px) {
@@ -136,7 +130,6 @@
 {#key data.pathname}
 
 <AuthCheck>
-
     <div class="container" in:fade={{ duration: 300, delay: 400 }} out:fade={{ duration: 300 }}>
         <main class="batlasDashboard">
                 {#if $user?.uid === $page.params.creatorId || !$page.url.href.includes('/player/')}

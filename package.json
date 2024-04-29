@@ -33,7 +33,6 @@
 		"firebase": "^9.23.0",
 		"firebase-admin": "^12.1.0",
 		"html2canvas": "^1.4.1",
-		"instagram-private-api": "^1.46.1",
 		"mdsvex": "^0.11.0",
 		"request-promise": "^4.2.6",
 		"uuid": "^9.0.0"
