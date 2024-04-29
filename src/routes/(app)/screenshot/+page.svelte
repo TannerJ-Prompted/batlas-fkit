@@ -7,7 +7,7 @@
   import { generateMultiplePrompts, monster, offensiveQuirk, defensiveQuirk, vowelCheck } from "$lib/promptGen";
 
 async function createSocialImage() {
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 1; i++) {
             await generateMap().then(async () => {
                     await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
                     await mapScreenshot().then(async () => {
