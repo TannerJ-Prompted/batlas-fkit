@@ -338,7 +338,7 @@
       <CombinedTileWindow handleFogToggle={handleFogToggle} tileOptions={true} {role}/>
       {/if}
     </div>
-    <div class="map" > 
+    <div class="map" id="mapScreenshot"> 
       {#if $currentAdventure.map.length === 0 && $currentAdventure.map.title === "" && role==="editor"}
       <div class="emptyMap" >
         <p>Hit 'random map' until you get a starting point that looks good to you. Then click the tiles to alter them and add notes. Happy dungeon delving!</p>
