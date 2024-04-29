@@ -328,7 +328,7 @@ function returnMapArray(template) {
   return template;
 }
 
-export function generateMap() {
+export async function generateMap() {
   let mapArray = returnMapArray(randomChoice(temporaryTemplates));
   currentAdventure.update((adventure) => {
     adventure.map = mapArray;
