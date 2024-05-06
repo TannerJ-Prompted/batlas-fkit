@@ -1,4 +1,6 @@
 <script>
+  import DebugTools from '../../../lib/components/DebugTools.svelte';
+
     import CombinedMap from "$lib/components/CombinedMap.svelte";
     import html2canvas from 'html2canvas';
     import { currentAdventure } from "$lib/adventureData";
@@ -6,70 +8,9 @@
   import { generateMap, map } from "$lib/mapGen";
   import { generateMultiplePrompts, monster, offensiveQuirk, defensiveQuirk, vowelCheck } from "$lib/promptGen";
 
-async function createSocialImage() {
-    for (let i = 0; i < 1; i++) {
-            await generateMap().then(async () => {
-                    await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
-                    await mapScreenshot().then(async () => {
-                        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
-                        await downloadImage();
-                    });
-            });
-    }
-}
 
-    async function mapScreenshot() {
-        if(document.querySelector("#currentScreenshot")) {
-            document.querySelector("#currentScreenshot").remove();
-        }
-        html2canvas(document.querySelector("#mapScreenshot"), {
-            backgroundColor: "#101010",
-            ignoreElements: (element) => element.classList.contains("tileNotesIndicator"),
-            x: -30,
-        }).then(canvas => {
-            let imgURL = canvas.toDataURL("image/png");
-            // let win = window.open();
-            // win.document.write('<img src="' + imgURL + '"/>');
-            let img = document.createElement("img");
-            img.src = imgURL;
-            img.id = "currentScreenshot";
-            img.style.width = "calc(100% + 150px)";
-            img.style.objectPosition = "left center";
-            img.style.transform = "translateX(-30px)";
-            img.style.height = "auto";
-            document.querySelector("#mapScreenshotContainer").appendChild(img);
-        });
-    }
 
-    function downloadImage() {
-        const squareContainer = document.querySelector("#squareContainer");
-        html2canvas(squareContainer).then(canvas => {
-            let imgURL = canvas.toDataURL("image/png");
-            let link = document.createElement("a");
-            link.href = imgURL;
-            link.download = "screenshot.png";
-            link.click();
-        });
-    }
 
-    function insertPrefix(word) {
-        if(word[0].match(/[aeiou]/i)) {
-            return `an `;
-        } else {
-            return `a `;
-        }
-    }
-
-    function createPrompts() {
-        generateMultiplePrompts(['monster', 'offensiveQuirk', 'defensiveQuirk']);
-        console.log($monster, $offensiveQuirk, $defensiveQuirk);
-        let monsterPrompt = `Home to ${insertPrefix($monster.description[0])} ${$monster.description} with ${$offensiveQuirk.description} and ${$defensiveQuirk.description}.`;
-        document.querySelector(".enemyPrompt").innerText = monsterPrompt;
-    }
-
-    onMount(() => {
-        createSocialImage();
-    });
   </script>
   
   <style>
@@ -123,7 +64,7 @@ async function createSocialImage() {
         width: 100vh;
         height: 100vh;
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
         position: fixed;
         top: 0;
@@ -174,7 +115,7 @@ async function createSocialImage() {
         height: 100%;
         display: flex;
         justify-content: flex-start;
-        align-items: flex-end;
+        align-items: center;
     }
 
   
@@ -186,20 +127,15 @@ async function createSocialImage() {
   
   </style>
 
-    <div class="debugTools">
-        <div class="debugButtons">
-            <p class="button blackButton" on:click={() => console.log($currentAdventure)}>Current Adventure</p>
-            <p class="button blackButton" on:click={createSocialImage}>Image Screenshot</p>
-        </div>
-    </div>
+<DebugTools />
   <div class="mapColumn">
     <CombinedMap role={"gameMaster"}/>
   </div>
   <div id="squareContainer">
     <div id="mapScreenshotContainer">
         <!-- Your map content here -->
-        <h3 class="logo">Batlas</h3>
-        <h3 class="slogan">A new map every day</h3>
+        <!-- <h3 class="logo">Batlas</h3>
+        <h3 class="slogan">A new map every day</h3> -->
         <!-- <p class="enemyPrompt">Enemy: </p> -->
     </div>
 </div>

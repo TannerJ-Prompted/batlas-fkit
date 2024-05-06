@@ -2,6 +2,7 @@
   import { currentAdventure } from "$lib/adventureData";
     import CombinedMap from "$lib/components/CombinedMap.svelte";
   import { onMount } from "svelte";
+  import DebugTools from "../../../../../../lib/components/DebugTools.svelte";
 
 </script>
 

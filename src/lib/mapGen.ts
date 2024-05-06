@@ -15,6 +15,49 @@ export let mapSettings = writable({
 
 let sourceTemplates = [
   [
+    [["R", "SE"], ["-"], ["-"], ["-"], ["-"]],
+    [["C", "NW", "SE"], ["R", "SW"], ["-"], ["-"], ["D", "SW"]],
+    [
+      ["-"],
+      ["R", "NW", "SE", "SW", "NE"],
+      ["-"],
+      ["C", "SW", "SE"],
+      ["D", "NE", "SW"],
+    ],
+    [
+      ["R", "NE", "SW"],
+      ["C", "NW", "SE"],
+      ["R", "SW", "NE"],
+      ["C", "NW", "NE", "SE"],
+      ["-"],
+    ],
+    [["C", "NE", "SE"], ["-"], ["R", "NW", "NE"], ["-"], ["C", "NW", "SE"]],
+    [["R", "NW", "SW"], ["-"], ["-"], ["-"], ["C", "NW", "SW"]],
+    [
+      ["R", "NE", "SE"],
+      ["-"],
+      ["R", "SE"],
+      ["C", "SW", "SE"],
+      ["R", "NE", "SW"],
+    ],
+    [
+      ["D", "NW", "SE"],
+      ["-"],
+      ["R", "NW", "NE"],
+      ["C", "NW", "NE", "SW"],
+      ["-"],
+    ],
+    [["-"], ["C", "NW", "SE"], ["-"], ["C", "NE", "SW"], ["-"]],
+    [["-"], ["R", "NW", "SE", "SW"], ["R", "NE", "SW", "SE"], ["-"], ["-"]],
+    [["-"], ["C", "NE", "SW"], ["R", "NE", "NW"], ["R", "NW", "SE"], ["-"]],
+    [["D", "NE", "SE"], ["-"], ["-"], ["D", "NW", "SE"], ["-"]],
+    [["-"], ["D", "NW", "SE"], ["C", "SW", "SE"], ["-"], ["C", "NW", "SE"]],
+    [["-"], ["C", "NW", "NE"], ["R", "NW"], ["-"], ["R", "NW"]],
+  ],
+];
+
+let sourceOLDTemplates = [
+  [
     [["R", "SE"], ["-"], ["R", "SE", "SW"], ["-"]],
     [["C", "NW", "SE"], ["C", "NE", "SW"], ["C", "NW", "SE"], ["-"]],
     [["-"], ["C", "NW", "NE", "SE"], ["-"], ["R", "NW", "SW"]],
@@ -297,6 +340,7 @@ function returnMapArray(template) {
         template[i][j] = {
           id: uuidv4(),
           zIndex: 0,
+          tileType: tileType,
           chosenTile: tiles.type.blank[0],
           tileOptions: null,
           tileNotes: "",
@@ -316,6 +360,7 @@ function returnMapArray(template) {
       template[i][j] = {
         id: uuidv4(),
         zIndex: i + 1,
+        tileType: tileType,
         chosenTile: chosenTile,
         tileOptions: tileOptions,
         tileNotes: "",
